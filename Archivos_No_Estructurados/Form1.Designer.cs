@@ -35,6 +35,7 @@
             this.btnCrear = new System.Windows.Forms.Button();
             this.btnAbrir = new System.Windows.Forms.Button();
             this.RtxtContenido = new System.Windows.Forms.RichTextBox();
+            this.lblTipodeArchivo = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnEliminarArchivo
@@ -53,7 +54,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Lucida Bright", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(163, 25);
+            this.label1.Location = new System.Drawing.Point(159, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(413, 34);
             this.label1.TabIndex = 23;
@@ -115,11 +116,21 @@
             this.RtxtContenido.TabIndex = 25;
             this.RtxtContenido.Text = "";
             // 
+            // lblTipodeArchivo
+            // 
+            this.lblTipodeArchivo.AutoSize = true;
+            this.lblTipodeArchivo.Font = new System.Drawing.Font("Lucida Bright", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTipodeArchivo.Location = new System.Drawing.Point(201, 48);
+            this.lblTipodeArchivo.Name = "lblTipodeArchivo";
+            this.lblTipodeArchivo.Size = new System.Drawing.Size(0, 23);
+            this.lblTipodeArchivo.TabIndex = 26;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(927, 639);
+            this.Controls.Add(this.lblTipodeArchivo);
             this.Controls.Add(this.RtxtContenido);
             this.Controls.Add(this.btnEliminarArchivo);
             this.Controls.Add(this.label1);
@@ -142,6 +153,7 @@
         private System.Windows.Forms.Button btnCrear;
         private System.Windows.Forms.Button btnAbrir;
         private System.Windows.Forms.RichTextBox RtxtContenido;
+        private System.Windows.Forms.Label lblTipodeArchivo;
     }
 }
 

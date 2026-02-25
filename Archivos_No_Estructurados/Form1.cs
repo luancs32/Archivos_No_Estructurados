@@ -9,7 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Xceed.Words.NET; // Para manejar archivos .docx (necesita instalar la librería DocX desde NuGet)
-
+using iText.Kernel.Pdf; // Para manejar archivos PDF (necesita instalar la librería iText7 desde NuGet)
+using iText.Kernel.Pdf.Canvas.Parser;
 
 namespace Archivos_No_Estructurados
 {
@@ -28,8 +29,7 @@ namespace Archivos_No_Estructurados
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             // Filtro universal para varios tipos de archivos no estructurados
-            openFileDialog.Filter = "Textos planos (*.txt, *.log, *.md)|*.txt;*.log;*.md|Texto Enriquecido (*.rtf)|*.rtf|Documentos Word (*.docx)|*.docx|Todos los archivos (*.*)|*.*";
-            openFileDialog.Title = "Abrir archivo no estructurado";
+            openFileDialog.Filter = "Textos planos (*.txt, *.log)|*.txt;*.log|Texto Enriquecido (*.rtf)|*.rtf|Documentos Word (*.docx)|*.docx|Archivos PDF (*.pdf)|*.pdf"; openFileDialog.Title = "Abrir archivo no estructurado";
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -39,6 +39,16 @@ namespace Archivos_No_Estructurados
                 {
                     // Obtenemos la extensión del archivo (ej. ".txt", ".rtf")
                     string extension = Path.GetExtension(rutaArchivoActual).ToLower();
+
+                    switch (extension)
+                    {
+                        case ".txt": lblTipodeArchivo.Text = "Tipo de archivo: Texto plano (.txt)"; break;
+                        case ".log": lblTipodeArchivo.Text = "Tipo de archivo: Bitácora (.log)"; break;
+                        case ".rtf": lblTipodeArchivo.Text = "Tipo de archivo: Texto enriquecido (.rtf)"; break;
+                        case ".docx": lblTipodeArchivo.Text = "Tipo de archivo: Documento Word (.docx)"; break;
+                        case ".pdf": lblTipodeArchivo.Text = "Tipo de archivo: Documento PDF (.pdf)"; break;
+                        default: lblTipodeArchivo.Text = "Tipo de archivo: " + extension.ToUpper(); break;
+                    }
 
                     // Decidimos cómo abrirlo dependiendo de su tipo
                     switch (extension)
@@ -65,8 +75,22 @@ namespace Archivos_No_Estructurados
                             break;
 
                         case ".pdf":
-                            MessageBox.Show("Los archivos PDF son de solo lectura y requieren una librería especial (como iText7 o PdfiumViewer).", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            RtxtContenido.Clear();
+                            // 1. Preparamos un "armador de textos" (StringBuilder es excelente para PDFs de muchas páginas)
+                            StringBuilder textoPDF = new StringBuilder();
+
+                            // 2. Abrimos el documento PDF usando la librería iText7
+                            using (PdfDocument pdfDocumento = new PdfDocument(new PdfReader(rutaArchivoActual)))
+                            {
+                                // 3. Hacemos un ciclo para recorrer el PDF página por página
+                                for (int i = 1; i <= pdfDocumento.GetNumberOfPages(); i++)
+                                {
+                                    // Extraemos el texto de la página actual y le agregamos un salto de línea al final
+                                    textoPDF.AppendLine(PdfTextExtractor.GetTextFromPage(pdfDocumento.GetPage(i)));
+                                }
+                            }
+
+                            // 4. Mostramos todo el texto extraído en tu RichTextBox
+                            RtxtContenido.Text = textoPDF.ToString();
                             break;
 
                         default:
@@ -96,6 +120,14 @@ namespace Archivos_No_Estructurados
             {
                 rutaArchivoActual = saveFileDialog.FileName;
                 string extension = Path.GetExtension(rutaArchivoActual).ToLower();
+                if (extension == ".rtf")
+                {
+                    lblTipodeArchivo.Text = "Tipo de archivo: Texto enriquecido (.rtf)";
+                }
+                else
+                {
+                    lblTipodeArchivo.Text = "Tipo de archivo: Texto plano (.txt)";
+                }
 
                 // Limpiamos la pantalla
                 RtxtContenido.Clear();
